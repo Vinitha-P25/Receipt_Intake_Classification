@@ -10,3 +10,5 @@ sample_docs/PASSWORD_TEST.pdf
 
 receipt_classification_results.csv
 outputs/results.csv
+
+extractor_backup.py
