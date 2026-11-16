@@ -330,7 +330,20 @@ if uploaded_files:
 
     st.subheader("Download Results")
 
-    csv_data = df.to_csv(index=False).encode("utf-8")
+    # Export the same columns and filtered rows shown in the table
+
+    csv_export_df = filtered_df[display_columns].copy()
+
+    # Format amounts to two decimal places
+
+    csv_export_df["amount"] = pd.to_numeric(
+        csv_export_df["amount"],
+        errors="coerce"
+    ).map(
+        lambda value: f"{value:.2f}" if pd.notna(value) else ""
+    )
+
+    csv_data = csv_export_df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         label="Download CSV Results",
