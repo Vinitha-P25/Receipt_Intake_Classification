@@ -2,19 +2,22 @@
 
 ## Overview
 
-A Streamlit application that accepts multiple PDF expense documents, detects whether each PDF contains digital text or scanned images, extracts text using PyMuPDF or Tesseract OCR, classifies the document, and extracts key expense information. Results are displayed in a reviewable table with filtering, sorting, category totals grouped by currency, detailed extracted text, and CSV export.
+A Streamlit-based application that accepts multiple PDF expense documents, detects digital text or scanned images, extracts text using PyMuPDF or Tesseract OCR, classifies documents, and extracts key expense information.
+
+The application displays results in a reviewable table with filtering, sorting, category totals grouped by currency, detailed extracted text, and CSV export.
 
 ## Features
 
-- Multiple PDF upload.
-- Digital text extraction and scanned-document OCR.
+- Multiple PDF uploads.
+- Digital text detection and extraction.
+- Automatic OCR fallback for scanned PDFs.
 - Document classification:
   - Receipt
   - Tax invoice
   - Travel ticket
   - Hotel folio
   - Not an expense document
-- Expense categories:
+- Expense categorization:
   - Food & Beverage
   - Travel
   - Accommodation
@@ -25,7 +28,8 @@ A Streamlit application that accepts multiple PDF expense documents, detects whe
 - Processing statuses: Done, Needs review, Unsupported, and Failed.
 - Filtering and sorting of results.
 - Expense totals grouped by category and currency.
-- CSV export and extracted-text review.
+- Detailed extracted-text review.
+- CSV export.
 
 ## Technology Stack
 
@@ -37,46 +41,78 @@ A Streamlit application that accepts multiple PDF expense documents, detects whe
 - pytesseract
 - Pillow
 
-## Design
+## Processing Workflow
 
-The application processes each uploaded PDF independently. PyMuPDF first checks for selectable digital text. If meaningful text is unavailable, the document is sent to Tesseract OCR. Multipage PDFs are treated as a single document, and the document-stated total is used for amount extraction. The extracted text is passed through rule-based classification and field-extraction logic. Required fields and classification confidence determine whether the document is marked Done or Needs review. Non-expense documents are marked Unsupported, while unreadable or invalid documents are marked Failed. PDF contents are treated strictly as document data and never as instructions to the application. The results are presented in Streamlit for review and CSV export.
+1. The user uploads one or multiple PDF documents.
+2. Each PDF is processed independently.
+3. PyMuPDF checks whether the PDF contains selectable digital text.
+4. If meaningful digital text is unavailable, Tesseract OCR extracts text from scanned pages.
+5. The extracted text is passed to the classification module.
+6. The application identifies the document type and expense category.
+7. The extraction module retrieves vendor, date, amount, currency, and reference number.
+8. Required fields and classification confidence determine the processing status.
+9. Results are displayed in the Streamlit interface for review and CSV export.
+
+Multipage PDFs are treated as a single document, and the document-stated total is used for amount extraction.
+
+PDF contents are treated strictly as document data and never as instructions to the application.
+
+## Processing Status
+
+| Status | Description |
+|---|---|
+| Done | Required fields are available with sufficient classification confidence. |
+| Needs review | One or more required fields are missing or uncertain. |
+| Unsupported | The document is not an expense document. |
+| Failed | The PDF is corrupt, password-protected, empty, or unreadable. |
+
+Missing or uncertain values are left blank rather than guessed.
 
 ## Installation and Setup
 
-### 1. Create a virtual environment
+### 1. Clone the repository
+
+```powershell
+git clone https://github.com/Vinitha-P25/Receipt_Intake_Classification.git
+cd Receipt_Intake_Classification
+```
+
+### 2. Create a virtual environment
 
 ```powershell
 python -m venv .venv
 ```
 
-### 2. Activate the environment
+### 3. Activate the environment
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 3. Install Python dependencies
+### 4. Install Python dependencies
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 4. Install Tesseract OCR
+### 5. Install Tesseract OCR
 
 Install the Tesseract OCR application separately on Windows and ensure its installation directory is added to the system PATH.
 
-Verify installation:
+Verify the installation:
 
 ```powershell
 tesseract --version
 ```
 
-### 5. Run the application
+### 6. Run the application
 
 ```powershell
 streamlit run app.py
 ```
+
+The application will open in your browser.
 
 ## Evaluation
 
@@ -90,42 +126,65 @@ The evaluation report is saved in:
 
 `outputs/evaluation_report.txt`
 
+See [docs/TESTING.md](docs/TESTING.md) for the detailed assessment testing and robustness verification report.
+
 ### Assessment Sample Results
 
+| Evaluation Field | Accuracy |
+|---|---:|
+| Source Detection | 100% |
+| Document Type | 100% |
+| Expense Category | 100% |
+| Vendor | 100% |
+| Date | 100% |
+| Amount | 100% |
+| Currency | 100% |
+| Reference Number | 100% |
+| Processing Status | 100% |
+
 - Documents processed: 12
-- Source accuracy: 100%
-- Document type accuracy: 100%
-- Category accuracy: 100%
-- Vendor accuracy: 100%
-- Date accuracy: 100%
-- Amount accuracy: 100%
-- Currency accuracy: 100%
-- Reference number accuracy: 100%
-- Status accuracy: 100%
 - Total mismatches: 0
 
-These results apply to the supplied 12 sample documents and do not guarantee the same accuracy on unseen documents.
+These results apply only to the 12 supplied assessment documents and do not guarantee the same accuracy on unseen documents.
 
 ## AI Tools Used
 
-ChatGPT was used as a development assistant for coding guidance, debugging, and understanding the application workflow. The application uses rule-based classification and extraction; no external LLM API is used during document processing.
+ChatGPT was used as a development assistant for coding guidance, debugging, and understanding the application workflow.
+
+The application uses rule-based classification and extraction. No external LLM API is used during document processing.
 
 ## Known Weaknesses
 
 1. Rule-based classification may not reliably recognize every unseen document layout or unfamiliar vendor.
 2. OCR accuracy can decrease with low-resolution, blurred, rotated, or handwritten documents.
-3. Field extraction depends on recognizable labels and formats; unusual date, amount, or reference-number layouts may require manual review.
+3. Field extraction depends on recognizable labels and formats. Unusual date, amount, or reference-number layouts may require manual review.
 4. The confidence score is based on classification rules and is not a calibrated probability of extraction accuracy.
 
 ## Project Structure
 
-- `app.py` – Streamlit user interface.
-- `processor.py` – PDF processing workflow and status handling.
-- `ocr_engine.py` – OCR processing.
-- `classifier.py` – Document and expense category classification.
-- `extractor.py` – Expense field extraction.
-- `evaluate.py` – Assessment evaluation runner.
-- `evaluator.py` – Evaluation and accuracy reporting.
-- `requirements.txt` – Python dependencies.
-- `sample_docs/` – Assessment sample PDFs and expected results.
-- `outputs/evaluation_report.txt` – Saved evaluation report.
+```text
+Receipt_Intake_Classification/
+│
+├── app.py
+├── processor.py
+├── ocr_engine.py
+├── classifier.py
+├── extractor.py
+├── evaluate.py
+├── evaluator.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── docs/
+│   └── TESTING.md
+│
+├── sample_docs/
+│   ├── R01.pdf
+│   ├── R02.pdf
+│   ├── ...
+│   ├── R12.pdf
+│   └── expected_results.csv
+│
+└── outputs/
+    └── evaluation_report.txt
