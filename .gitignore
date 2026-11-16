@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.streamlit/secrets.toml
+sample_docs/CORRUPT_TEST.pdf
+sample_docs/EMPTY_TEST.pdf
+sample_docs/MULTIPAGE_TEST.pdf
+sample_docs/PASSWORD_TEST.pdf
+
+receipt_classification_results.csv
+outputs/results.csv

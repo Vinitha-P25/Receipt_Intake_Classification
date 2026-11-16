@@ -1,0 +1,13 @@
+file,source,document_type,category,vendor,date,amount,currency,document_number,status
+R01.pdf,Digital,Receipt,Food & Beverage,Kopi Corner,2026-10-02,18.40,SGD,KC-1001,Done
+R02.pdf,Digital,Receipt,Travel,CityCab Singapore,2026-10-03,24.60,SGD,CC-2204,Done
+R03.pdf,OCR,Receipt,Food & Beverage,Lotus Garden Restaurant,2026-10-04,86.20,SGD,LG-3041,Done
+R04.pdf,Digital,Travel ticket,Travel,SkyJet Airways,2026-10-06,312.00,USD,SJ-77821,Done
+R05.pdf,Digital,Hotel folio,Accommodation,Harbourview Hotel,2026-10-08,540.00,SGD,HV-8802,Done
+R06.pdf,OCR,Receipt,Office Supplies,PaperMart,2026-10-05,47.85,SGD,PM-551,Done
+R07.pdf,Digital,Tax invoice,Office Supplies,TechHub Pte Ltd,2026-09-28,129.00,SGD,TH-INV-901,Done
+R08.pdf,OCR,Receipt,Travel,Metro Cabs Bengaluru,2026-10-09,780.00,INR,MC-8830,Done
+R09.pdf,Digital,Receipt,Food & Beverage,Brasserie Lune,2026-10-10,54.50,EUR,BL-190,Done
+R10.pdf,OCR,Receipt,Travel,CarPark Central,2026-10-07,,,CP-410,Needs review
+R11.pdf,Digital,Not an expense document,,,,,,,Unsupported
+R12.pdf,Digital,Tax invoice,Other,StarLink Mobile,2026-10-01,68.00,SGD,SL-INV-120,Done
