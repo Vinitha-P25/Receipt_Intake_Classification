@@ -39,7 +39,7 @@ A Streamlit application that accepts multiple PDF expense documents, detects whe
 
 ## Design
 
-The application processes each uploaded PDF independently. PyMuPDF first checks for selectable digital text. If meaningful text is unavailable, the document is sent to Tesseract OCR. The extracted text is passed through rule-based classification and field-extraction logic. Required fields and classification confidence determine whether the document is marked Done or Needs review. Non-expense documents are marked Unsupported, while unreadable or invalid documents are marked Failed. The results are presented in Streamlit for review and CSV export.
+The application processes each uploaded PDF independently. PyMuPDF first checks for selectable digital text. If meaningful text is unavailable, the document is sent to Tesseract OCR. Multipage PDFs are treated as a single document, and the document-stated total is used for amount extraction. The extracted text is passed through rule-based classification and field-extraction logic. Required fields and classification confidence determine whether the document is marked Done or Needs review. Non-expense documents are marked Unsupported, while unreadable or invalid documents are marked Failed. PDF contents are treated strictly as document data and never as instructions to the application. The results are presented in Streamlit for review and CSV export.
 
 ## Installation and Setup
 
